@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import styled from "@emotion/styled";
 import { Heart } from "./Heart";
-import { updateFavorite } from "../api/updateFavorite";
+import { addFavorite } from "../api/addFavorite";
+import { deleteFavorite } from "../api/deleteFavorite";
 
 const StyledCourse = styled.div`
   background: #ccc;
@@ -19,10 +21,18 @@ export const Course = ({
   favorite,
   onAfterFavorite,
   id,
+  show,
 }: any) => {
-  const setIsFavorite = async ({ email, course_id }: any) => {
-    const courses = await updateFavorite({ email, course_id });
-    onAfterFavorite();
+  const [isFav, setIsFav] = useState(favorite);
+
+  const setIsFavorite = ({ isFavorite, email, course_id }: any) => {
+    if (isFav) {
+      deleteFavorite({ email, course_id });
+      setIsFav(false);
+    } else {
+      addFavorite({ email, course_id });
+      setIsFav(true);
+    }
   };
 
   return (
@@ -31,10 +41,11 @@ export const Course = ({
       <div>{instructor}</div>
       <div>
         <Heart
-          isFavorite={favorite}
+          isFavorite={isFav}
           onClick={() => setIsFavorite({
             "course_id": id,
             "email": "roachedezigne@gmail.com",
+            isFavorite: favorite,
           })}
         />
       </div>
