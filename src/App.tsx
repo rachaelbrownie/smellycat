@@ -1,35 +1,34 @@
-import { useEffect } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { useEffect, useState } from "react";
 import { getCoursesByUser } from "./api/getCoursesByUser";
+import { Course } from './components/Course';
 
 function App() {
+  const [courses, setCourses] = useState<any | null>(null);
 
-  const getNewFact = async () => {
+  const fetchAllCourses = async () => {
     const courses = await getCoursesByUser();
-    console.log('courses', courses);
+    setCourses(courses);
   };
 
   useEffect(() => {
-    getNewFact();
+    fetchAllCourses();
   }, []);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <header className="App-header"></header>
+      <section>
+        {courses && courses.map((data: any) => 
+          <Course 
+            title={data.title} 
+            instructor={data.instructor_name} 
+            image={data.instructor_image_url} 
+            favorite={data.favorite}
+            key={data.id}
+          />
+        )}
+      </section>
+      <footer></footer>
     </div>
   );
 }
